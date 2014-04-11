@@ -3,7 +3,6 @@ package orbitapi
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"

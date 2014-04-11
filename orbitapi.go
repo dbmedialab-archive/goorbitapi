@@ -1,3 +1,7 @@
+// Copyright 2014 DB Medialab.  All rights reserved.
+// License: MIT
+
+// Package orbitapi provides client access to the Orbit API (http://orbitapi.com/)
 package orbitapi
 
 import (
@@ -8,14 +12,19 @@ import (
 )
 
 var (
+	// URL on which the Orbit API can be reached
 	orbitApiUrl = "http://api.orbitapi.com/"
 )
 
 type OrbitApi struct {
+	// Key to access the API with
 	apiKey string
+
+	// Result will be sent on this channel
 	Result chan map[string]interface{}
 }
 
+// Create a new Orbit API client
 func NewClient(apiKey string) (orbitapi *OrbitApi) {
 	orbitapi = new(OrbitApi)
 	orbitapi.apiKey = apiKey
@@ -23,21 +32,23 @@ func NewClient(apiKey string) (orbitapi *OrbitApi) {
 	return
 }
 
+// Send a new GET request to the API
 func (o *OrbitApi) Get(uri string) error {
-
 	getUrl := orbitApiUrl + uri
 	req, err := http.NewRequest("GET", getUrl, nil)
 	if err != nil {
 		return err
 	}
 
+	// Get requests require the API key to be sent as a header
 	req.Header.Add("X-Orbit-API-Key", o.apiKey)
 	return o.doRequest(req)
 }
 
+// Send a new POST request to the API
 func (o *OrbitApi) Post(uri string, args url.Values) error {
-
 	postUrl := orbitApiUrl + uri
+	// Post requests require the API key to be sent a key=value
 	args.Add("api_key", o.apiKey)
 	req, err := http.NewRequest("POST", postUrl, strings.NewReader(args.Encode()))
 	if err != nil {
@@ -47,6 +58,7 @@ func (o *OrbitApi) Post(uri string, args url.Values) error {
 	return o.doRequest(req)
 }
 
+// Do the actual request and return the response on o.Result
 func (o *OrbitApi) doRequest(req *http.Request) error {
 	client := http.Client{}
 	resp, err := client.Do(req)

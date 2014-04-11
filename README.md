@@ -4,12 +4,12 @@ GO OrbitAPI client
 Go client for Orbit API - http://orbitapi.com/
 
 
-```
+```GO
 package main
 
 import (
   "fmt"
-  "github.com/dbmedialab/orbitapi"
+  "github.com/dbmedialab/goorbitapi"
   "log"
   "net/url"
 )

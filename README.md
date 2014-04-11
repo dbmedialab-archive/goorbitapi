@@ -21,21 +21,29 @@ var (
 func main() {
   api := orbitapi.NewClient(apiKey)
 
-  info, err := api.Get("info")
-  if err != nil {
-    log.Fatal("Info error: ", err)
-  }
+  go func() {
+    err := api.Get("info")
+    if err != nil {
+      log.Fatal("Info error: ", err)
+    }
+  }()
 
-  fmt.Println("Words remaining today: ", info["daily_word_limit"].(float64)-info["words_today"].(float64))
+  result := <-api.Result
 
-  args := url.Values{}
-  args.Add("text", "Jeg liker politikk sa Solberg til VG.")
+  fmt.Println("Words remaining today: ", result["daily_word_limit"].(float64)-result["words_today"].(float64))
 
-  info, err = api.Post("tag", args)
-  if err != nil {
-    log.Fatal("Tag error: ", err)
-  }
+  go func() {
+    args := url.Values{}
+    args.Add("text", "Jeg liker politikk sa Solberg til VG.")
 
-  fmt.Println(info)
+    err := api.Post("tag", args)
+    if err != nil {
+      log.Fatal("Tag error: ", err)
+    }
+  }()
+
+  result = <-api.Result
+
+  fmt.Println(result)
 }
 ```

@@ -2,15 +2,13 @@ package orbitapi
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
 var (
-	infoURL = "http://api.orbitapi.com/info"
-	tagURL  = "http://api.orbitapi.com/tag"
+	orbitApiUrl = "http://api.orbitapi.com/"
 )
 
 type OrbitApi struct {
@@ -23,9 +21,10 @@ func NewClient(apiKey string) (orbitapi *OrbitApi) {
 	return
 }
 
-func (o *OrbitApi) Info() (map[string]interface{}, error) {
+func (o *OrbitApi) Get(uri string) (map[string]interface{}, error) {
 
-	req, err := http.NewRequest("GET", infoURL, nil)
+	getUrl := orbitApiUrl + uri
+	req, err := http.NewRequest("GET", getUrl, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -34,17 +33,11 @@ func (o *OrbitApi) Info() (map[string]interface{}, error) {
 	return doRequest(req)
 }
 
-func (o *OrbitApi) Tag(args url.Values) (map[string]interface{}, error) {
+func (o *OrbitApi) Post(uri string, args url.Values) (map[string]interface{}, error) {
 
-	// APIs required arguments
-	_, text := args["text"]
-	_, url := args["url"]
-	if text == true && url == true || text == false && url == false {
-		return nil, errors.New("You must specify either text or url")
-	}
-
+	postUrl := orbitApiUrl + uri
 	args.Add("api_key", o.apiKey)
-	req, err := http.NewRequest("POST", tagURL, strings.NewReader(args.Encode()))
+	req, err := http.NewRequest("POST", postUrl, strings.NewReader(args.Encode()))
 	if err != nil {
 		return nil, err
 	}

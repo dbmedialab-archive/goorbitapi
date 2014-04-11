@@ -21,7 +21,7 @@ var (
 func main() {
   api := orbitapi.NewClient(apiKey)
 
-  info, err := api.Info()
+  info, err := api.Get("info")
   if err != nil {
     log.Fatal("Info error: ", err)
   }
@@ -31,7 +31,7 @@ func main() {
   args := url.Values{}
   args.Add("text", "Jeg liker politikk sa Solberg til VG.")
 
-  info, err = api.Tag(args)
+  info, err = api.Post("tag", args)
   if err != nil {
     log.Fatal("Tag error: ", err)
   }

@@ -48,7 +48,7 @@ func (o *OrbitApi) Get(uri string) error {
 // Send a new POST request to the API
 func (o *OrbitApi) Post(uri string, args url.Values) error {
 	postUrl := orbitApiUrl + uri
-	// Post requests require the API key to be sent a key=value
+	// Post requests require the API key to be sent as a key=value pair
 	args.Add("api_key", o.apiKey)
 	req, err := http.NewRequest("POST", postUrl, strings.NewReader(args.Encode()))
 	if err != nil {

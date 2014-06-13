@@ -1,6 +1,8 @@
 GO OrbitAPI client
 ==================
 
+[![Build Status](https://travis-ci.org/dbmedialab/goorbitapi.svg)](https://travis-ci.org/dbmedialab/goorbitapi)
+
 Go client for Orbit API - http://orbitapi.com/
 
 
@@ -34,7 +36,7 @@ func main() {
 
   go func() {
     args := url.Values{}
-    args.Add("text", "Jeg liker politikk sa Solberg til VG.")
+    args.Add("text", "Jeg liker politikk sa Solberg til Dagbladet.")
 
     err := api.Post("tag", args)
     if err != nil {
@@ -44,6 +46,6 @@ func main() {
 
   result = <-api.Result
 
-  fmt.Println(result)
+  fmt.Printf("%+v", result)
 }
 ```

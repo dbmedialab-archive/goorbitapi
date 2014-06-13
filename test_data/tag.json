@@ -1,0 +1,36 @@
+{
+  "entities": {
+    "Erna_Solberg": {
+      "image": "http:\/\/upload.wikimedia.org\/wikipedia\/commons\/2\/25\/Erna_Solberg,_Wesenberg,_2011_(1).jpg",
+      "label": "Erna Solberg",
+      "link": "http:\/\/no.wikipedia.org\/wiki\/Erna_Solberg",
+      "relevance": 0.5,
+      "type": "Per",
+      "thumbnail": "http:\/\/upload.wikimedia.org\/wikipedia\/commons\/thumb\/2\/25\/Erna_Solberg,_Wesenberg,_2011_(1).jpg\/50px-Erna_Solberg,_Wesenberg,_2011_(1).jpg"
+    },
+    "Dagbladet": {
+      "image": "http:\/\/upload.wikimedia.org\/wikipedia\/commons\/0\/05\/Dagbladet_logo.svg",
+      "label": "Dagbladet",
+      "link": "http:\/\/no.wikipedia.org\/wiki\/Dagbladet",
+      "relevance": 0.5,
+      "type": "Org",
+      "thumbnail": "http:\/\/upload.wikimedia.org\/wikipedia\/commons\/thumb\/0\/05\/Dagbladet_logo.svg\/50px-Dagbladet_logo.svg.png"
+    }
+  },
+  "remaining_words": 9944,
+  "text": [
+    [
+      "Jeg liker politikk sa",
+      {
+        "text": "Solberg",
+        "entity": "Erna_Solberg"
+      },
+      "til",
+      {
+        "text": "Dagbladet",
+        "entity": "Dagbladet"
+      },
+      "."
+    ]
+  ]
+}

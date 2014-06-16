@@ -35,17 +35,16 @@ func main() {
   fmt.Println("Words remaining today: ", result["daily_word_limit"].(float64)-result["words_today"].(float64))
 
   go func() {
-    args := url.Values{}
+    args := &url.Values{}
     args.Add("text", "Jeg liker politikk sa Solberg til Dagbladet.")
-
-    err := api.Post("tag", args)
-    if err != nil {
-      log.Fatal("Tag error: ", err)
+    if err := api.ConceptTag(args); err != nil {
+      t.Fatal(err)
     }
   }()
 
   result = <-api.Result
+  result = result.(*OrbitTag)
 
-  fmt.Printf("%+v", result)
+  fmt.Printf("%#v", result)
 }
 ```

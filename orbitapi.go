@@ -57,6 +57,13 @@ func (o *OrbitApi) AccountInfo() error {
 	return o.Get("info")
 }
 
+// Concept tagging
+// http://orbit.ai/documentation/tag#tag
+func (o *OrbitApi) ConceptTag(args *url.Values) error {
+	o.data = new(OrbitTag)
+	return o.Post("tag", args)
+}
+
 // Send a new GET request to the API
 func (o *OrbitApi) Get(uri string) error {
 	getUrl := orbitApiUrl + uri

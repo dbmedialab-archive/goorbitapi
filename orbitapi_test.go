@@ -5,13 +5,11 @@
 package orbitapi
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"testing"
 )
 
@@ -21,18 +19,29 @@ type TestData struct {
 	e interface{}
 }
 
-func TestOrbitTagDecode(t *testing.T) {
-	td, err := os.Open("test_data/tag.json")
-	if err != nil {
-		t.Fatal("Unable to open tag test data file")
-	}
+func TestConceptTagRequest(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		o, err := ioutil.ReadFile("test_data/tag.json")
+		if err != nil {
+			t.Fatal("Unable to open info test data file")
+		}
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintln(w, string(o))
+	}))
+	defer ts.Close()
 
-	data := new(OrbitTag)
-	err = json.NewDecoder(td).Decode(&data)
-	if err != nil {
-		t.Error("Failed decoding json data:", err)
-	}
+	orbitApiUrl = ts.URL + "/"
+	api := NewClient("apiKey")
+	go func() {
+		args := &url.Values{}
+		args.Add("text", "Jeg liker politikk sa Solberg til Dagbladet.")
+		if err := api.ConceptTag(args); err != nil {
+			t.Fatal(err)
+		}
+	}()
 
+	d := <-api.Result
+	data := d.(*OrbitTag)
 	testData := []TestData{
 		{"Entities[\"Erna_Solberg\"].Image", data.Entities["Erna_Solberg"].Image, "http://upload.wikimedia.org/wikipedia/commons/2/25/Erna_Solberg,_Wesenberg,_2011_(1).jpg"},
 		{"Entities[\"Erna_Solberg\"].Label", data.Entities["Erna_Solberg"].Label, "Erna Solberg"},

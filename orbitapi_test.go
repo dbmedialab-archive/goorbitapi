@@ -126,7 +126,7 @@ func TestPostRequestContentType(t *testing.T) {
 
 	orbitApiUrl = ts.URL
 	api := NewClient("apiKey")
-	api.Post("", url.Values{})
+	api.Post("", &url.Values{})
 }
 
 func TestPostRequestAPIKeyIsSet(t *testing.T) {
@@ -141,5 +141,5 @@ func TestPostRequestAPIKeyIsSet(t *testing.T) {
 
 	orbitApiUrl = ts.URL
 	api := NewClient("apiKey")
-	api.Post("", url.Values{})
+	api.Post("", &url.Values{})
 }

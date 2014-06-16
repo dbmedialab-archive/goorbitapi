@@ -1,0 +1,12 @@
+{
+  "iptc_requests_limit": 150,
+  "name": "JustAdam",
+  "concurrent_requests": null,
+  "iptc_requests_today": 0,
+  "daily_word_limit": 10000,
+  "langdetect_requests_limit": 150,
+  "langdetect_requests_today": 0,
+  "words_today": 8,
+  "api_key": "XXX",
+  "id": 1
+}

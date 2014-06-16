@@ -24,13 +24,13 @@ func main() {
   api := orbitapi.NewClient(apiKey)
 
   go func() {
-    err := api.Get("info")
-    if err != nil {
+    if err := api.AccountInfo(); err != nil {
       log.Fatal("Info error: ", err)
     }
   }()
 
   result := <-api.Result
+  result = result.(map[string]interface{})
 
   fmt.Println("Words remaining today: ", result["daily_word_limit"].(float64)-result["words_today"].(float64))
 

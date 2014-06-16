@@ -20,6 +20,9 @@ type OrbitApi struct {
 	// Key to access the API with
 	apiKey string
 
+	// JSON response is decoded into this type before being sent on channel Result
+	data interface{}
+
 	// Result will be sent on this channel
 	Result chan interface{}
 }
@@ -43,8 +46,15 @@ type OrbitEntity struct {
 func NewClient(apiKey string) (orbitapi *OrbitApi) {
 	orbitapi = new(OrbitApi)
 	orbitapi.apiKey = apiKey
+	orbitapi.data = make(map[string]interface{})
 	orbitapi.Result = make(chan interface{})
 	return
+}
+
+// Get account info.
+// http://orbit.ai/documentation/account-info#info
+func (o *OrbitApi) AccountInfo() error {
+	return o.Get("info")
 }
 
 // Send a new GET request to the API
@@ -57,8 +67,8 @@ func (o *OrbitApi) Get(uri string) error {
 
 	// Get requests require the API key to be sent as a header
 	req.Header.Add("X-Orbit-API-Key", o.apiKey)
-	data := make(map[string]interface{})
-	return o.doRequest(req, data)
+
+	return o.doRequest(req)
 }
 
 // Send a new POST request to the API
@@ -71,17 +81,11 @@ func (o *OrbitApi) Post(uri string, args url.Values) error {
 		return err
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	var data interface{}
-	if uri == "tag" {
-		data = new(OrbitTag)
-	} else {
-		data = make(map[string]interface{})
-	}
-	return o.doRequest(req, data)
+	return o.doRequest(req)
 }
 
 // Do the actual request and return the response on o.Result
-func (o *OrbitApi) doRequest(req *http.Request, data interface{}) error {
+func (o *OrbitApi) doRequest(req *http.Request) error {
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -89,10 +93,10 @@ func (o *OrbitApi) doRequest(req *http.Request, data interface{}) error {
 	}
 	defer resp.Body.Close()
 
-	err = json.NewDecoder(resp.Body).Decode(&data)
+	err = json.NewDecoder(resp.Body).Decode(&o.data)
 	if err != nil {
 		return err
 	}
-	o.Result <- data
+	o.Result <- o.data
 	return nil
 }

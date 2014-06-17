@@ -1,7 +1,7 @@
 GO OrbitAPI client
 ==================
 
-[![Build Status](https://travis-ci.org/dbmedialab/goorbitapi.svg)](https://travis-ci.org/dbmedialab/goorbitapi)
+[![Build Status](https://travis-ci.org/dbmedialab/goorbitapi.svg)](https://travis-ci.org/dbmedialab/goorbitapi) [![Coverage Status](https://coveralls.io/repos/dbmedialab/goorbitapi/badge.png)](https://coveralls.io/r/dbmedialab/goorbitapi)
 
 Go client for Orbit API - http://orbitapi.com/
 
@@ -32,7 +32,7 @@ func main() {
   r := <-api.Result
   result := r.(map[string]interface{})
 
-  fmt.Println("Words remaining today: ", result["daily_word_limit"].(float64)-result["words_today"].(float64))
+  fmt.Println("Words remaining today:", result["daily_word_limit"].(float64)-result["words_today"].(float64))
 
   go func() {
     args := &url.Values{}
@@ -43,7 +43,7 @@ func main() {
   }()
 
   r = <-api.Result
-  result = r.(*OrbitTag)
+  result = r.(*orbitapi.OrbitTag)
 
   fmt.Printf("%#v", result)
 }

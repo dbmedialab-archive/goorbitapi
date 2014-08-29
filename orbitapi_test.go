@@ -32,16 +32,16 @@ func TestConceptTagRequest(t *testing.T) {
 
 	orbitApiUrl = ts.URL + "/"
 	api := NewClient("apiKey")
+	tag := make(chan *OrbitTag, 1)
 	go func() {
 		args := &url.Values{}
 		args.Add("text", "Jeg liker politikk sa Solberg til Dagbladet.")
-		if err := api.ConceptTag(args); err != nil {
+		if err := api.ConceptTag(tag, args); err != nil {
 			t.Fatal(err)
 		}
 	}()
 
-	d := <-api.Result
-	data := d.(*OrbitTag)
+	data := <-tag
 	testData := []TestData{
 		{"Entities[\"Erna_Solberg\"].Image", data.Entities["Erna_Solberg"].Image, "http://upload.wikimedia.org/wikipedia/commons/2/25/Erna_Solberg,_Wesenberg,_2011_(1).jpg"},
 		{"Entities[\"Erna_Solberg\"].Label", data.Entities["Erna_Solberg"].Label, "Erna Solberg"},
@@ -84,14 +84,14 @@ func TestAccountInfoRequest(t *testing.T) {
 
 	orbitApiUrl = ts.URL + "/"
 	api := NewClient("apiKey")
+	info := make(chan map[string]interface{}, 1)
 	go func() {
-		if err := api.AccountInfo(); err != nil {
+		if err := api.AccountInfo(info); err != nil {
 			t.Fatal(err)
 		}
 	}()
 
-	d := <-api.Result
-	data := d.(map[string]interface{})
+	data := <-info
 	testData := []TestData{
 		{"iptc_requests_limit", data["iptc_requests_limit"], float64(150)},
 		{"name", data["name"], "JustAdam"},

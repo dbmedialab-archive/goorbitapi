@@ -20,11 +20,8 @@ type OrbitApi struct {
 	// Key to access the API with
 	apiKey string
 
-	// JSON response is decoded into this type before being sent on channel Result
-	data interface{}
-
-	// Result will be sent on this channel
-	Result chan interface{}
+	// JSON response from the API is decoded into this type
+	Data interface{}
 }
 
 type OrbitTag struct {
@@ -46,26 +43,35 @@ type OrbitEntity struct {
 func NewClient(apiKey string) (orbitapi *OrbitApi) {
 	orbitapi = new(OrbitApi)
 	orbitapi.apiKey = apiKey
-	orbitapi.data = make(map[string]interface{})
-	orbitapi.Result = make(chan interface{})
+	orbitapi.Data = make(map[string]interface{})
 	return
 }
 
 // Get account info.
 // http://orbit.ai/documentation/account-info#info
-func (o *OrbitApi) AccountInfo() error {
-	return o.Get("info")
+func (o *OrbitApi) AccountInfo(result chan<- map[string]interface{}) error {
+	err := o.Get("info")
+	if err != nil {
+		return err
+	}
+	result <- o.Data.(map[string]interface{})
+	return nil
 }
 
 // Concept tagging
 // http://orbit.ai/documentation/tag#tag
-func (o *OrbitApi) ConceptTag(args *url.Values) error {
-	o.data = new(OrbitTag)
-	return o.Post("tag", args)
+func (o *OrbitApi) ConceptTag(result chan<- *OrbitTag, args *url.Values) error {
+	o.Data = new(OrbitTag)
+	err := o.Post("tag", args)
+	if err != nil {
+		return err
+	}
+	result <- o.Data.(*OrbitTag)
+	return nil
 }
 
 // Send a new GET request to the API
-func (o *OrbitApi) Get(uri string) error {
+func (o *OrbitApi) Get(uri string) ( error) {
 	getUrl := orbitApiUrl + uri
 	req, err := http.NewRequest("GET", getUrl, nil)
 	if err != nil {
@@ -79,7 +85,7 @@ func (o *OrbitApi) Get(uri string) error {
 }
 
 // Send a new POST request to the API
-func (o *OrbitApi) Post(uri string, args *url.Values) error {
+func (o *OrbitApi) Post(uri string, args *url.Values) ( error) {
 	postUrl := orbitApiUrl + uri
 	// Post requests require the API key to be sent as a key=value pair
 	args.Add("api_key", o.apiKey)
@@ -92,7 +98,7 @@ func (o *OrbitApi) Post(uri string, args *url.Values) error {
 }
 
 // Do the actual request and return the response on o.Result
-func (o *OrbitApi) doRequest(req *http.Request) error {
+func (o *OrbitApi) doRequest(req *http.Request) (error) {
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -100,10 +106,9 @@ func (o *OrbitApi) doRequest(req *http.Request) error {
 	}
 	defer resp.Body.Close()
 
-	err = json.NewDecoder(resp.Body).Decode(&o.data)
+	err = json.NewDecoder(resp.Body).Decode(&o.Data)
 	if err != nil {
 		return err
 	}
-	o.Result <- o.data
 	return nil
 }

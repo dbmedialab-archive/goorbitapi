@@ -8,10 +8,12 @@ go:
 install:
   - go get code.google.com/p/go.tools/cmd/cover
   - go get github.com/mattn/goveralls
+  - go get code.google.com/p/go.tools/cmd/vet
   - export PATH=$PATH:$HOME/gopath/bin/
 script:
   - go get -d -v ./... && go build -v ./...
   - go test -covermode=count -coverprofile=profile.cov
+  - go vet
 after_success:
   - goveralls -coverprofile=profile.cov -service=travis-ci
 notifications:

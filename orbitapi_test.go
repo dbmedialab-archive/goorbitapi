@@ -152,3 +152,29 @@ func TestPostRequestAPIKeyIsSet(t *testing.T) {
 	api := NewClient("apiKey")
 	api.Post("", &url.Values{})
 }
+
+func TestGetReturnsError(t *testing.T) {
+	orbitApiUrl = "non-existant"
+	api := NewClient("apiKey")
+	err := api.Get("/")
+	if err == nil {
+		t.Errorf("Expecting Error but got %v", err)
+	}
+}
+
+func TestPostReturnsError(t *testing.T) {
+	orbitApiUrl = "non-existant"
+	api := NewClient("apiKey")
+	err := api.Post("/", &url.Values{})
+	if err == nil {
+		t.Errorf("Expecting Error but got %v", err)
+	}
+}
+
+func TestDoRequestReturnsError(t *testing.T) {
+	api := NewClient("apiKey")
+	err := api.doRequest(&http.Request{})
+	if err == nil {
+		t.Errorf("Expecting Error but got %v", err)
+	}
+}

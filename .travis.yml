@@ -10,7 +10,10 @@ install:
   - go get code.google.com/p/go.tools/cmd/vet
   - export PATH=$PATH:$HOME/gopath/bin/
 script:
-  - go get -d -v ./... && go build -v ./...
+  - go get -d -v ./...
+  - go build -v .
+  - go build cmd/sample.go
+  - go build cmd/textquery.go
   - go test -covermode=count -coverprofile=profile.cov
   - go vet
 after_success:

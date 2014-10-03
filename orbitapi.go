@@ -71,7 +71,7 @@ func (o *OrbitApi) ConceptTag(result chan<- *OrbitTag, args *url.Values) error {
 }
 
 // Send a new GET request to the API
-func (o *OrbitApi) Get(uri string) ( error) {
+func (o *OrbitApi) Get(uri string) error {
 	getUrl := orbitApiUrl + uri
 	req, err := http.NewRequest("GET", getUrl, nil)
 	if err != nil {
@@ -85,7 +85,7 @@ func (o *OrbitApi) Get(uri string) ( error) {
 }
 
 // Send a new POST request to the API
-func (o *OrbitApi) Post(uri string, args *url.Values) ( error) {
+func (o *OrbitApi) Post(uri string, args *url.Values) error {
 	postUrl := orbitApiUrl + uri
 	// Post requests require the API key to be sent as a key=value pair
 	args.Add("api_key", o.apiKey)
@@ -98,7 +98,7 @@ func (o *OrbitApi) Post(uri string, args *url.Values) ( error) {
 }
 
 // Do the actual request and return the response on o.Result
-func (o *OrbitApi) doRequest(req *http.Request) (error) {
+func (o *OrbitApi) doRequest(req *http.Request) error {
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
